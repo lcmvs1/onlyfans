@@ -22,5 +22,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/donations", donationRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/uploads", express.static("uploads"));
 
 module.exports = app;
