@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import "../css/App.css";
+import flanImg from "/flan.png";
 
 function AuthForm({ setUser }) {
 
@@ -161,9 +162,11 @@ function AuthForm({ setUser }) {
 
                             <span>OnlyFl</span>
 
-                            <span className="flan-icon">
-                                🍮
-                            </span>
+                            <img
+                                src={flanImg}
+                                alt="flan"
+                                className="flan-logo"
+                            />
 
                             <span>ns</span>
 

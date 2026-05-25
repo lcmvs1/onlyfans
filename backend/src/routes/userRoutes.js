@@ -19,7 +19,11 @@ const {
 
 // Listar creadores y ver perfil (solo para seguidores)
 router.get("/creadores", verifyToken, verifyRole("seguidor"), getCreadores);
-router.get("/creador/:id", verifyToken, verifyRole("seguidor"), getCreadorById);
+router.get(
+  "/creador/:id",
+  verifyToken,
+  getCreadorById
+);
 
 // Favoritos (solo seguidores)
 router.get("/favoritos", verifyToken, verifyRole("seguidor"), getFavoritos);

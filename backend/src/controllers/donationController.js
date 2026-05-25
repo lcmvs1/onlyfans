@@ -3,7 +3,7 @@ const pool = require("../db/db");
 const donateFlan = async (req, res) => {
   try {
     const seguidorId = req.user.id;
-    const { creadorId, cantidadFlanes } = req.body;
+    const { creadorId, postId, cantidadFlanes } = req.body;
 
     if (!creadorId || !cantidadFlanes || cantidadFlanes <= 0) {
       return res.status(400).json({
@@ -22,8 +22,42 @@ const donateFlan = async (req, res) => {
       });
     }
 
-    const monto = cantidadFlanes * 10; 
+    let monto = 0;
 
+    if (cantidadFlanes == 100) {
+
+      monto = 2;
+
+    }
+
+    else if (cantidadFlanes == 500) {
+
+      monto = 7;
+
+    }
+
+    else if (cantidadFlanes == 1000) {
+
+      monto = 12;
+
+    }
+
+    await pool.query(
+
+      `
+      INSERT INTO desbloqueos(
+        seguidor_id,
+        post_id
+      )
+      VALUES($1,$2)
+
+      ON CONFLICT
+      DO NOTHING
+      `,
+
+      [seguidorId, postId]
+
+    );
     const result = await pool.query(
       `INSERT INTO donaciones (seguidor_id, creador_id, cantidad_flanes, monto) 
        VALUES ($1, $2, $3, $4) 
@@ -41,6 +75,7 @@ const donateFlan = async (req, res) => {
   }
 };
 
+
 const getDonationsHistory = async (req, res) => {
   try {
     const seguidorId = req.user.id;
@@ -52,7 +87,7 @@ const getDonationsHistory = async (req, res) => {
       JOIN usuarios u ON d.creador_id = u.id
       WHERE d.seguidor_id = $1
     `;
-    
+
     const params = [seguidorId];
     let paramCounter = 2;
 

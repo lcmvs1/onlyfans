@@ -1,39 +1,112 @@
 import "../css/App.css";
 
-import Feed from "./Feed";
+import { useState } from "react";
 
-function FollowerDashboard({ user, setUser }) {
+import Creators from "./Creators";
+import CreatorProfile from "./CreatorProfile";
+
+import defaultProfile from "../assets/user.png";
+
+function FollowerDashboard({ setUser }) {
+
+    const [selectedCreator, setSelectedCreator] = useState(null);
 
     const logout = () => {
 
         localStorage.removeItem("token");
-
         localStorage.removeItem("user");
 
         setUser(null);
-
     };
+
+    if (selectedCreator) {
+
+        return (
+
+            <CreatorProfile
+                creatorId={selectedCreator}
+                goBack={() => setSelectedCreator(null)}
+            />
+
+        );
+    }
 
     return (
 
-        <div className="dashboard">
+        <div className="app-layout">
 
-            <h1>
-                Bienvenido seguidor
-            </h1>
 
-            <h2>
-                {user.nombre}
-            </h2>
+            <aside className="left-sidebar">
 
-            <Feed />
+                <h1 className="logo">
+                    OnlyFlans
+                </h1>
 
-            <button
-                className="logout-btn"
-                onClick={logout}
-            >
-                Cerrar sesión
-            </button>
+                <nav className="sidebar-menu">
+
+                    <button>
+                        Inicio
+                    </button>
+
+                    <button>
+                        Perfil
+                    </button>
+
+                    <button onClick={logout}>
+                        Cerrar sesión
+                    </button>
+
+                </nav>
+
+            </aside>
+
+
+            <main className="main-feed">
+
+                <h2 className="feed-title">
+                    Creadores
+                </h2>
+
+                <div className="creator-list">
+
+                    <Creators
+                        setSelectedCreator={setSelectedCreator}
+                    />
+
+                </div>
+            </main>
+
+            {/* SIDEBAR DERECHA */}
+
+            <aside className="right-sidebar">
+
+                <h3 className="popular-title">
+                    Populares
+                </h3>
+
+                <div className="popular-card">
+
+                    <img
+                        src={defaultProfile}
+                        alt=""
+                        className="popular-avatar"
+                    />
+
+                    <div>
+
+                        <p className="popular-name">
+                            Selina
+                        </p>
+
+                        <small>
+                            @SelinaOfficial
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </aside>
 
         </div>
 

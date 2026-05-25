@@ -79,6 +79,26 @@ const initDb = async () => {
       );
     `);
 
+    // Tabla de Desbloqueos
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS desbloqueos (
+        id SERIAL PRIMARY KEY,
+
+        seguidor_id INTEGER NOT NULL
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE,
+
+        post_id INTEGER NOT NULL
+        REFERENCES posts(id)
+        ON DELETE CASCADE,
+
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+        CONSTRAINT unique_unlock
+        UNIQUE (seguidor_id, post_id)
+      );
+    `);
+
     console.log("Tablas e índices de base de datos verificados/creados correctamente.");
   } catch (error) {
     console.error("Error al inicializar la base de datos:", error.message);
