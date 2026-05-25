@@ -19,8 +19,11 @@ function PostList({ posts }) {
                             <div className="post-avatar">
 
                                 <img
-                                    src={defaultProfile}
-                                    alt="perfil"
+                                    src={
+                                        post.creador_foto
+                                            ? `http://localhost:3000${post.creador_foto}`
+                                            : defaultProfile
+                                    }
                                 />
 
                             </div>
@@ -29,14 +32,13 @@ function PostList({ posts }) {
 
                                 <h3 className="post-user">
 
-                                    {post.creador_nombre || "Selina"}
+                                    {post.creador_nombre}
 
                                 </h3>
 
                                 <small className="post-date">
 
-                                    @{post.creador_nombre || "SelinaOfficial"}
-
+                                    @{post.creador_nombre}Official
                                 </small>
 
                             </div>

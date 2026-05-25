@@ -2,7 +2,7 @@ import { useState } from "react";
 import "../css/App.css";
 import axios from "axios";
 
-function CreatePost({ posts, setPosts }) {
+function CreatePost({ loadPosts }) {
 
     const [contenido, setContenido] = useState("");
     const [titulo, setTitulo] = useState("");
@@ -22,7 +22,7 @@ function CreatePost({ posts, setPosts }) {
             if (imagen) {
                 formData.append("imagen", imagen);
             }
-            const response = await axios.post(
+            await axios.post(
 
                 "http://localhost:3000/api/posts/create",
 
@@ -36,10 +36,8 @@ function CreatePost({ posts, setPosts }) {
 
             );
 
-            setPosts([
-                response.data.post,
-                ...posts
-            ]);
+            await loadPosts();
+
 
             setContenido("");
             setTitulo("");

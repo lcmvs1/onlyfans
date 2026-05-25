@@ -190,6 +190,164 @@ const getFavoritos = async (req, res) => {
   }
 };
 
+const followCreator = async (req, res) => {
+
+  try {
+
+    const seguidorId = req.user.id;
+
+    const { creadorId } = req.body;
+
+    await pool.query(
+
+      `
+      INSERT INTO seguidores (
+        seguidor_id,
+        creador_id
+      )
+
+      VALUES ($1, $2)
+
+      ON CONFLICT (
+        seguidor_id,
+        creador_id
+      ) DO NOTHING
+      `,
+
+      [seguidorId, creadorId]
+
+    );
+
+    res.json({
+      message: "Ahora sigues al creador"
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: "Error al seguir creador"
+    });
+
+  }
+
+};
+
+const unfollowCreator = async (req, res) => {
+
+  try {
+
+    const seguidorId = req.user.id;
+
+    const { creadorId } = req.params;
+
+    await pool.query(
+
+      `
+      DELETE FROM seguidores
+      WHERE seguidor_id = $1
+      AND creador_id = $2
+      `,
+
+      [seguidorId, creadorId]
+
+    );
+
+    res.json({
+      message: "Has dejado de seguir"
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: "Error"
+    });
+
+  }
+
+};
+const getFollowing = async (req, res) => {
+
+  try {
+
+    const seguidorId = req.user.id;
+
+    const result = await pool.query(
+
+      `
+      SELECT
+        u.id,
+        u.nombre,
+        u.foto_perfil
+
+      FROM seguidores s
+
+      JOIN usuarios u
+      ON s.creador_id = u.id
+
+      WHERE s.seguidor_id = $1
+      `,
+
+      [seguidorId]
+
+    );
+
+    res.json(result.rows);
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: "Error"
+    });
+
+  }
+
+};
+
+const checkFollowing = async (req, res) => {
+
+  try {
+
+    const seguidorId = req.user.id;
+
+    const { creadorId } = req.params;
+
+    const result = await pool.query(
+
+      `
+      SELECT *
+      FROM seguidores
+      WHERE seguidor_id = $1
+      AND creador_id = $2
+      `,
+
+      [seguidorId, creadorId]
+
+    );
+
+    res.json({
+
+      following: result.rows.length > 0
+
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: "Error"
+    });
+
+  }
+
+};
+
 module.exports = {
   getCreadores,
   getCreadorById,
@@ -197,5 +355,9 @@ module.exports = {
   getIngresos,
   addFavorito,
   removeFavorito,
-  getFavoritos
+  getFavoritos,
+  followCreator,
+  unfollowCreator,
+  getFollowing,
+  checkFollowing
 };

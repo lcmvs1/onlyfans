@@ -12,10 +12,42 @@ const {
   getIngresos,
   addFavorito,
   removeFavorito,
-  getFavoritos
+  getFavoritos,
+  followCreator,
+  unfollowCreator,
+  getFollowing,
+  checkFollowing
 } = require("../controllers/userController");
 
 // Rutas comunes o específicas por rol
+
+router.get(
+  "/following",
+  verifyToken,
+  verifyRole("seguidor"),
+  getFollowing
+);
+
+router.post(
+  "/follow",
+  verifyToken,
+  verifyRole("seguidor"),
+  followCreator
+);
+
+router.delete(
+  "/unfollow/:creadorId",
+  verifyToken,
+  verifyRole("seguidor"),
+  unfollowCreator
+);
+
+router.get(
+  "/is-following/:creadorId",
+  verifyToken,
+  verifyRole("seguidor"),
+  checkFollowing
+);
 
 // Listar creadores y ver perfil (solo para seguidores)
 router.get("/creadores", verifyToken, verifyRole("seguidor"), getCreadores);

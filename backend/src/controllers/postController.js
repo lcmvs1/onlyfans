@@ -75,25 +75,32 @@ const getPosts = async (req, res) => {
     const postsQuery = await pool.query(
 
       `
-      SELECT 
+  SELECT 
 
-      p.*,
+    p.*,
 
-      EXISTS(
+    u.nombre AS creador_nombre,
 
-        SELECT 1
-        FROM desbloqueos d
-        WHERE d.post_id = p.id
-        AND d.seguidor_id = $2
+    u.foto_perfil AS creador_foto,
 
-      ) AS desbloqueado
+    EXISTS(
 
-      FROM posts p
+      SELECT 1
+      FROM desbloqueos d
+      WHERE d.post_id = p.id
+      AND d.seguidor_id = $2
 
-      WHERE p.creador_id = $1
+    ) AS desbloqueado
 
-      ORDER BY p.created_at DESC
-      `,
+  FROM posts p
+
+  JOIN usuarios u
+  ON p.creador_id = u.id
+
+  WHERE p.creador_id = $1
+
+  ORDER BY p.created_at DESC
+  `,
 
       [creadorId, userId]
 
@@ -170,10 +177,20 @@ const getFeed = async (req, res) => {
         p.titulo,
         p.contenido,
         p.imagen,
-        p.created_at, 
+        p.created_at,
+
         u.id AS creador_id,
         u.nombre AS creador_nombre,
-        u.foto_perfil AS creador_foto
+        u.foto_perfil AS creador_foto,
+
+        EXISTS(
+
+          SELECT 1
+          FROM desbloqueos d
+          WHERE d.post_id = p.id
+          AND d.seguidor_id = $1
+
+        ) AS desbloqueado
 
       FROM posts p
 
@@ -182,9 +199,9 @@ const getFeed = async (req, res) => {
 
       WHERE p.creador_id IN (
 
-        SELECT f.creador_id 
-        FROM favoritos f
-        WHERE f.seguidor_id = $1
+        SELECT creador_id
+        FROM seguidores
+        WHERE seguidor_id = $1
 
       )
 
@@ -192,16 +209,31 @@ const getFeed = async (req, res) => {
 
     `;
 
-    const result = await pool.query(query, [seguidorId]);
+    const result = await pool.query(
+      query,
+      [seguidorId]
+    );
 
-    res.json(result.rows);
+    const posts = result.rows;
+
+    for (let post of posts) {
+
+      if (!post.desbloqueado) {
+
+        post.contenido = null;
+
+      }
+
+    }
+
+    res.json(posts);
 
   } catch (error) {
 
-    console.error("Error al obtener feed:", error);
+    console.error(error);
 
     res.status(500).json({
-      message: "Error al obtener el feed de publicaciones"
+      message: "Error al obtener feed"
     });
 
   }

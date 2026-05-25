@@ -108,7 +108,7 @@ function CreatorDashboard({ user, setUser }) {
 
     useEffect(() => {
 
-        const loadCreatorProfile = async () => {
+        const fetchData = async () => {
 
             try {
 
@@ -129,6 +129,8 @@ function CreatorDashboard({ user, setUser }) {
 
                 setCreatorData(response.data);
 
+                await loadPosts();
+
             } catch (error) {
 
                 console.log(error);
@@ -137,9 +139,7 @@ function CreatorDashboard({ user, setUser }) {
 
         };
 
-        loadCreatorProfile();
-
-        loadPosts();
+        fetchData();
 
     }, []);
 
@@ -325,8 +325,7 @@ function CreatorDashboard({ user, setUser }) {
             </div>
 
             <CreatePost
-                posts={posts}
-                setPosts={setPosts}
+                loadPosts={loadPosts}
             />
 
             <button
@@ -392,11 +391,11 @@ function CreatorDashboard({ user, setUser }) {
                             <div className="income-summary">
 
                                 <h3>
-                                     Total Flanes: {totalFlanes}
+                                    Total Flanes: {totalFlanes}
                                 </h3>
 
                                 <h3>
-                                     Total Bs: {totalMonto}
+                                    Total Bs: {totalMonto}
                                 </h3>
 
                             </div>

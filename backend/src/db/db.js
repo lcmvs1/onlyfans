@@ -79,6 +79,16 @@ const initDb = async () => {
       );
     `);
 
+    await client.query(`
+  CREATE TABLE IF NOT EXISTS seguidores (
+    id SERIAL PRIMARY KEY,
+    seguidor_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    creador_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_seguidor UNIQUE (seguidor_id, creador_id)
+  );
+`);
+
     // Tabla de Desbloqueos
     await client.query(`
       CREATE TABLE IF NOT EXISTS desbloqueos (

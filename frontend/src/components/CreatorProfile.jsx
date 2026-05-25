@@ -5,7 +5,7 @@ import "../css/App.css";
 import defaultProfile from "../assets/user.png";
 
 
-function CreatorProfile({ creatorId }) {
+function CreatorProfile({ creatorId , loadFavoritos}) {
 
     const [creator, setCreator] = useState(null);
 
@@ -32,6 +32,43 @@ function CreatorProfile({ creatorId }) {
 
     const [selectedPost, setSelectedPost] = useState(null);
 
+    const [isFavorite, setIsFavorite] = useState(false);
+
+    const [isFollowing, setIsFollowing] = useState(false);
+
+    const checkFavorite = async () => {
+
+        try {
+
+            const token = localStorage.getItem("token");
+
+            const response = await axios.get(
+
+                "http://localhost:3000/api/users/favoritos",
+
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+
+            );
+
+            const exists = response.data.some(
+
+                fav => fav.id === creatorId
+
+            );
+
+            setIsFavorite(exists);
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+
+    };
 
     const loadProfile = async () => {
 
@@ -86,11 +123,42 @@ function CreatorProfile({ creatorId }) {
 
     };
 
+    const checkFollowing = async () => {
+
+        try {
+
+            const token =
+                localStorage.getItem("token");
+
+            const response = await axios.get(
+
+                `http://localhost:3000/api/users/is-following/${creatorId}`,
+
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+
+            );
+
+            setIsFollowing(response.data.following);
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+
+    };
+
     useEffect(() => {
 
         const fetchProfile = async () => {
 
             await loadProfile();
+            await checkFavorite();
+            await checkFollowing();
 
         };
 
@@ -125,6 +193,7 @@ function CreatorProfile({ creatorId }) {
             setHasDonated(true);
 
             loadProfile();
+            loadFavoritos();
 
         } catch (error) {
 
@@ -272,6 +341,157 @@ function CreatorProfile({ creatorId }) {
                                     @{creator.nombre}Official
                                 </p>
 
+                                <div className="profile-action-buttons">
+
+                                    <button
+                                        className={
+                                            isFollowing
+                                                ? "following-btn"
+                                                : "follow-btn-profile"
+                                        }
+
+                                        onClick={async () => {
+
+                                            try {
+
+                                                const token =
+                                                    localStorage.getItem("token");
+
+                                                if (!isFollowing) {
+
+                                                    await axios.post(
+
+                                                        "http://localhost:3000/api/users/follow",
+
+                                                        {
+                                                            creadorId: creator.id
+                                                        },
+
+                                                        {
+                                                            headers: {
+                                                                Authorization: `Bearer ${token}`
+                                                            }
+                                                        }
+
+                                                    );
+
+                                                    setIsFollowing(true);
+
+                                                }
+
+                                                else {
+
+                                                    await axios.delete(
+
+                                                        `http://localhost:3000/api/users/unfollow/${creator.id}`,
+
+                                                        {
+                                                            headers: {
+                                                                Authorization: `Bearer ${token}`
+                                                            }
+                                                        }
+
+                                                    );
+
+                                                    setIsFollowing(false);
+
+                                                }
+
+                                            } catch (error) {
+
+                                                console.log(error);
+
+                                            }
+
+                                        }}
+                                    >
+
+                                        {
+                                            isFollowing
+                                                ? "Following"
+                                                : "Follow"
+                                        }
+
+                                    </button>
+
+
+                                    <button
+                                        className="favorite-btn"
+
+                                        onClick={async () => {
+
+                                            try {
+
+                                                const token =
+                                                    localStorage.getItem("token");
+
+                                                if (!isFavorite) {
+
+                                                    await axios.post(
+
+                                                        "http://localhost:3000/api/users/favoritos",
+
+                                                        {
+                                                            creadorId: creator.id
+                                                        },
+
+                                                        {
+                                                            headers: {
+                                                                Authorization:
+                                                                    `Bearer ${token}`
+                                                            }
+                                                        }
+
+                                                    );
+
+                                                    setIsFavorite(true);
+
+                                                    await loadFavoritos();
+
+                                                }
+
+                                                else {
+
+                                                    await axios.delete(
+
+                                                        `http://localhost:3000/api/users/favoritos/${creator.id}`,
+
+                                                        {
+                                                            headers: {
+                                                                Authorization:
+                                                                    `Bearer ${token}`
+                                                            }
+                                                        }
+
+                                                    );
+
+                                                    setIsFavorite(false);
+
+                                                    await loadFavoritos();
+
+                                                }
+
+                                            } catch (error) {
+
+                                                console.log(error);
+
+                                            }
+
+                                        }}
+                                    >
+
+                                        <i
+                                            className={
+                                                isFavorite
+                                                    ? "bi bi-star-fill"
+                                                    : "bi bi-star"
+                                            }
+                                        ></i>
+
+                                    </button>
+
+                                </div>
+
                             </div>
 
                         </div>
@@ -307,8 +527,11 @@ function CreatorProfile({ creatorId }) {
                                         <div className="feed-post-header">
 
                                             <img
-                                                src={defaultProfile}
-                                                alt=""
+                                                src={
+                                                    post.creador_foto
+                                                        ? `http://localhost:3000${post.creador_foto}`
+                                                        : defaultProfile
+                                                }
                                                 className="feed-post-avatar"
                                             />
 

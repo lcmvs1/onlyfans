@@ -173,17 +173,15 @@ select {
     text-align: center;
 }
 
-/* LOGO */
-
 .logo {
 
-    display: flex;
+    font-size: 44px;
 
-    justify-content: center;
+    font-weight: 800;
 
-    align-items: center;
+    color: #5d4037;
 
-    margin-bottom: 35px;
+    margin-bottom: 20px;
 }
 
 .logo-text {
@@ -1463,24 +1461,6 @@ select {
     margin-top: 4px;
 }
 
-/* BOTON */
-
-.follow-btn {
-
-    border: none;
-
-    background: linear-gradient(135deg, #d4a017, #f0c14b);
-
-    color: white;
-
-    padding: 12px 20px;
-
-    border-radius: 999px;
-
-    font-weight: 700;
-
-    cursor: pointer;
-}
 
 /* DERECHA */
 
@@ -1552,16 +1532,7 @@ select {
     flex-direction: column;
 }
 
-.logo {
 
-    font-size: 48px;
-
-    font-weight: 800;
-
-    color: #5d4037;
-
-    margin-bottom: 40px;
-}
 
 .sidebar-menu {
 
@@ -1722,30 +1693,6 @@ select {
     color: #9e8f87;
 }
 
-/* BOTON */
-
-.follow-btn {
-
-    border: none;
-
-    background: linear-gradient(135deg, #d4a017, #f0c14b);
-
-    color: white;
-
-    font-size: 15px;
-
-    font-weight: 700;
-
-    padding: 14px 24px;
-
-    border-radius: 16px;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-
-    box-shadow: 0 5px 14px rgba(212, 160, 23, 0.25);
-}
 
 .follow-btn:hover {
 
@@ -1805,12 +1752,11 @@ select {
 .popular-name {
 
     font-size: 18px;
-
-    font-weight: 700;
-
+    font-weight: 700px;
     color: #5d4037;
+    text-align: left;
+    line-height: 15px;
 
-    margin: 0;
 }
 
 .popular-card small {
@@ -2522,6 +2468,102 @@ select {
     font-size: 15px;
     background: #aaaaaa;
 
+}
+
+.profile-action-buttons {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    margin-top: 16px;
+}
+
+.follow-btn-profile {
+
+    background: white;
+
+    color: black;
+
+    border: none;
+
+    padding: 10px 24px;
+
+    border-radius: 999px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+    font-size: 15px;
+}
+
+.follow-btn-profile:hover {
+
+    transform: scale(1.03);
+}
+
+.following-btn {
+
+    background: #6b463d;
+
+    color: white;
+
+    border: none;
+
+    padding: 10px 24px;
+
+    border-radius: 999px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    font-size: 15px;
+}
+
+.favorite-btn {
+
+    width: 44px;
+
+    height: 44px;
+
+    border-radius: 50%;
+
+    border: none;
+
+    background: #6b463d;
+
+    color: white;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.favorite-btn:hover {
+
+    transform: scale(1.08);
+}
+
+.favorite-btn:hover {
+
+    transform: scale(1.08);
+
+    background: #3e2723;
+
+}
+
+
+.follow-btn:hover {
+
+    opacity: 0.85;
 }
 
 .income-filters button {

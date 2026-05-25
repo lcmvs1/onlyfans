@@ -60,8 +60,14 @@ function Creators({ setSelectedCreator }) {
                         <div className="creator-left">
 
                             <img
-                                src={defaultProfile}
+                                src={
+                                    creator.foto_perfil
+                                        ? `http://localhost:3000${creator.foto_perfil}`
+                                        : defaultProfile
+                                }
+
                                 alt="perfil"
+
                                 className="creator-avatar"
                             />
 
